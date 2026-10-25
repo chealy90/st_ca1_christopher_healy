@@ -16,12 +16,17 @@ def unpickle():
             training_data["labels"].extend(data[b"labels"])
 
     training_data["data"] = np.concatenate(training_data["data"])
+    training_data["labels"] = np.array(training_data["labels"])
+
         
     #test batch
     with open('cifar10/test_batch', 'rb') as f:
         data = pickle.load(f, encoding='bytes')
         test_data["data"].append(data[b"data"])
         test_data["labels"].extend(data[b"labels"])
+
+        test_data["data"] = np.array(test_data["data"]).reshape(10000, 3072)
+        test_data["labels"] = np.array(test_data["labels"])
    
     return training_data, test_data
 

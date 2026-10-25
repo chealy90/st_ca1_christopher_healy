@@ -32,11 +32,11 @@ cifar100_class_list = ["cattle", "fox", "baby", "boy",
 #stage 1
 def load_data():
     train_data, test_data = unpickle()
-    #print(train_data)
-    #print(test_data)
-    print(train_data.keys())
-    print(test_data.keys())
-    #X_train,y_train, X_test, y_test = validate_data(train_data, test_data)
+    X_train, y_train = train_data["data"], train_data["labels"]
+    X_test, y_test = test_data["data"], test_data["labels"]
+
+    print(X_train.shape, y_train.shape)
+    print(X_test.shape, y_test.shape)
 
 
 if __name__ == "__main__":
