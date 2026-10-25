@@ -1,2 +1,6 @@
 .env
 /cnn_env
+/.venv
+/cifar10
+.python-version
+__pycache__
