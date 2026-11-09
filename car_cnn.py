@@ -39,6 +39,8 @@ def load_data():
     print(X_test.shape, y_test.shape)
 
 
+
+
 if __name__ == "__main__":
     load_data()
 
