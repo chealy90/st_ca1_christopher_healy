@@ -1,0 +1,13 @@
+[project]
+name = "st-ca1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.11.2",
+    "numpy>=2.4.6",
+    "opencv-python>=5.0.0.93",
+    "scikit-learn>=1.9.1",
+    "tensorflow>=2.21.0",
+]
