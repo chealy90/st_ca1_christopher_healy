@@ -192,8 +192,18 @@ def unpickle():
 
 
 
-#def validate_data(train_data, test_data):
+def validate_data(X_train, y_train, X_test, y_test):
+    #assert data is in correct shape
+    print("X_train shape: ", X_train.shape)
+    print("y_train shape: ", y_train.shape)
+    assert(X_train.shape[0] == y_train.shape[0]), "The number of training images does not match the number of labels"
+    assert(X_test.shape[0] == y_test.shape[0]), "The number of test images does not match the number of labels"
+    assert(X_train.shape[1:] == (32, 32, 3)), "The dimensions of the training images are not 32 x 32 x 3"
+    assert(X_test.shape[1:] == (32, 32, 3)), "The dimensions of the test images are not 32 x 32 x 3"
+    print("All assertions passed")
     
+
+
 
 def grayscale(img):
     img = cv2.cvtColor, cv2.COLOR_RGB2GRAY

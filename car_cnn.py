@@ -22,21 +22,31 @@ np.random.seed(0)
 
 #import utils
 from util_funcs import *
-
-#classification options
-cifar10_class_list = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
-cifar100_class_list = ["cattle", "fox", "baby", "boy",
-"girl", "man", "woman", "rabbit", "squirrel", "trees", "bicycle", "bus", "motorcycle", "pickup truck", "train", "lawn-mower", "tractor"]
+#train_data, test_data = None
+#X_train, y_train, X_test, y_test = None
 
 
-#stage 1
+#stage 1 - data preprocessing
 def load_data():
     train_data, test_data = unpickle()
+
     X_train, y_train = train_data["data"], train_data["labels"]
     X_test, y_test = test_data["data"], test_data["labels"]
 
-    print(X_train.shape, y_train.shape)
-    print(X_test.shape, y_test.shape)
+    #reshape to 32x32x3
+    X_train = X_train.reshape(-1, 32, 32, 3)
+    X_test = X_test.reshape(-1, 32, 32, 3)
+
+    
+
+    validate_data(X_train, y_train, X_test, y_test) #ensure data is of correct form through assert statements
+
+    #split data into x and y parts
+    X_train, y_train = train_data["data"], train_data["labels"]
+    X_test, y_test = test_data["data"], test_data["labels"]
+    
+
+
 
 
 
