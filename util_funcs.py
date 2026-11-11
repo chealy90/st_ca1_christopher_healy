@@ -218,7 +218,7 @@ def preprocess_image(img):
     
 
 def grayscale(img):
-    img = cv2.cvtColor, cv2.COLOR_RGB2GRAY
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     return img
 
 
