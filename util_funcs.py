@@ -201,15 +201,29 @@ def validate_data(X_train, y_train, X_test, y_test):
     assert(X_train.shape[1:] == (32, 32, 3)), "The dimensions of the training images are not 32 x 32 x 3"
     assert(X_test.shape[1:] == (32, 32, 3)), "The dimensions of the test images are not 32 x 32 x 3"
     print("All assertions passed")
+
+
+def apply_preprocessing(X_train, X_test):
+    X_train = np.array(list(map(preprocess_image, X_train)))
+    X_test = np.array(list(map(preprocess_image, X_test)))
+
+    return X_train, X_test
+
+def preprocess_image(img):
+    img = grayscale(img)
+    img = equalize(img)
+    img = img/255
+
+    return img
     
-
-
 
 def grayscale(img):
     img = cv2.cvtColor, cv2.COLOR_RGB2GRAY
     return img
 
+
 def equalize(img):
     #this only works for grayscale images
     img = cv2.equalizeHist(img)
     return img
+

@@ -22,8 +22,8 @@ np.random.seed(0)
 
 #import utils
 from util_funcs import *
-#train_data, test_data = None
-#X_train, y_train, X_test, y_test = None
+train_data, test_data = None, None
+X_train, y_train, X_test, y_test = None, None, None, None
 
 
 #stage 1 - data preprocessing
@@ -38,14 +38,12 @@ def load_data():
     X_test = X_test.reshape(-1, 32, 32, 3)
 
     
-
     validate_data(X_train, y_train, X_test, y_test) #ensure data is of correct form through assert statements
 
-    #split data into x and y parts
-    X_train, y_train = train_data["data"], train_data["labels"]
-    X_test, y_test = test_data["data"], test_data["labels"]
+    X_train, X_test = apply_preprocessing(X_train, X_test)
     
 
+#stage 2 - data exploration
 
 
 
