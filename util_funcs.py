@@ -1,16 +1,27 @@
 import pickle
 import cv2
 import numpy as np
-import ast
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+'''
+    Class Names
+'''
+cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
+cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
+        "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
+cifar100_class_names_coarse = ["trees"]
+
 
 def unpickle():
     '''
     classes to filter by
     '''
-    cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
-    cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
-        "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
-    cifar100_class_names_coarse = ["trees"]
+    #cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
+    #cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
+    #    "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
+    #cifar100_class_names_coarse = ["trees"]
 
 
     '''
@@ -192,14 +203,59 @@ def unpickle():
 
 
 
-#def validate_data(train_data, test_data):
+def validate_data(X_train, y_train, X_test, y_test):
+    #assert data is in correct shape
+    print("X_train shape: ", X_train.shape)
+    print("y_train shape: ", y_train.shape)
+    assert(X_train.shape[0] == y_train.shape[0]), "The number of training images does not match the number of labels"
+    assert(X_test.shape[0] == y_test.shape[0]), "The number of test images does not match the number of labels"
+    assert(X_train.shape[1:] == (32, 32, 3)), "The dimensions of the training images are not 32 x 32 x 3"
+    assert(X_test.shape[1:] == (32, 32, 3)), "The dimensions of the test images are not 32 x 32 x 3"
+    print("All assertions passed")
+
+
+def apply_preprocessing(X_train, X_test):
+    X_train = np.array(list(map(preprocess_image, X_train)))
+    X_test = np.array(list(map(preprocess_image, X_test)))
+
+    return X_train, X_test
+
+def preprocess_image(img):
+    img = grayscale(img)
+    img = equalize(img)
+    img = img/255
+
+    return img
     
 
 def grayscale(img):
-    img = cv2.cvtColor, cv2.COLOR_RGB2GRAY
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     return img
+
 
 def equalize(img):
     #this only works for grayscale images
     img = cv2.equalizeHist(img)
     return img
+
+def display_image(img, title):
+    plt.imshow(img)
+    plt.title(title)
+    plt.show()
+
+def calculate_training_sample_dist(num_classes, data, X_train, y_train):
+    num_samples = []
+    #convert to data frame to use iterrows
+    for i in data:
+        x_selected = X_train[y_train==i]
+        num_samples.append(len(x_selected))
+
+    return num_samples
+
+def plot_training_sample_dist(num_classes, num_samples):
+    plt.figure(figsize=(12, 8))
+    plt.bar(range(0, num_classes), num_samples)
+    plt.title("Distribution of the training set")
+    plt.xlabel("Class number")
+    plt.ylabel("Number of images")
+    plt.show()
