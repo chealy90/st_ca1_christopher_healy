@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.model_selection import train_test_split
 
 
 
@@ -299,3 +300,14 @@ def evaluate_model(model, model_name, X_train, y_train, X_val, y_val, X_test, y_
     score = model.evaluate(X_test, y_test, verbose=1)
     print(model_name + " test score: ", score[0])
     print(model_name + " test accuracy: ", score[1])
+
+
+def create_train_validation_split(X_train, y_train):
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_train, y_train,
+        test_size=0.2,
+        random_state=42,
+        stratify=y_train
+    )
+
+    return X_train, X_val, y_train, y_val
