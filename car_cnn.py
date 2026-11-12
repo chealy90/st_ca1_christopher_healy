@@ -45,32 +45,36 @@ def load_data():
 
     #reshape to 32x32x3
     #the transpose line fixes I had with images not being rendered properly (ChatGPT)
-    print("Before: ", X_train.shape)
     X_train = X_train.reshape(-1, 3, 32, 32)
     X_train = X_train.transpose(0, 2, 3, 1)
 
     X_test = X_test.reshape(-1, 3, 32, 32)
     X_test = X_test.transpose(0, 2, 3, 1)
-    print("After: ", X_train.shape)
 
-    image = X_train[500]
-    plt.imshow(image)
-    plt.show()
+    
+    #ensure data is of correct form through assert statements
+    validate_data(X_train, y_train, X_test, y_test) 
 
-    validate_data(X_train, y_train, X_test, y_test) #ensure data is of correct form through assert statements
+    #check typical image
+    display_image(X_train[500], "Typical Image: (Before processing)")
 
     X_train, X_test = apply_preprocessing(X_train, X_test)
-
     return X_train, y_train, X_test, y_test
 
 #stage 2 - data exploration
 def explore_data(X_train, y_train, X_test, y_test):
+    
     #show typical image
-    print(type(X_train))
-    image = X_train[500]
-    plt.imshow(image)
-    plt.show()
+    display_image(X_train[500], "Typical Image: (After processing)")
 
+    #image shape
+    print("Final Image Shape:", X_train[500].shape )
+
+    #distribution of classes
+    all_class_names = cifar100_class_names_coarse + cifar100_class_names_fine + cifar10_class_names
+    num_classes = len(all_class_names)
+    num_samples = calculate_training_sample_dist(num_classes, all_class_names, X_train, y_train)
+    plot_training_sample_dist(num_classes, num_samples)
 
 
 

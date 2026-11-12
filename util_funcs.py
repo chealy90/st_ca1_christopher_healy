@@ -1,16 +1,27 @@
 import pickle
 import cv2
 import numpy as np
-import ast
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+'''
+    Class Names
+'''
+cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
+cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
+        "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
+cifar100_class_names_coarse = ["trees"]
+
 
 def unpickle():
     '''
     classes to filter by
     '''
-    cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
-    cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
-        "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
-    cifar100_class_names_coarse = ["trees"]
+    #cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
+    #cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
+    #    "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
+    #cifar100_class_names_coarse = ["trees"]
 
 
     '''
@@ -227,3 +238,24 @@ def equalize(img):
     img = cv2.equalizeHist(img)
     return img
 
+def display_image(img, title):
+    plt.imshow(img)
+    plt.title(title)
+    plt.show()
+
+def calculate_training_sample_dist(num_classes, data, X_train, y_train):
+    num_samples = []
+    #convert to data frame to use iterrows
+    for i in data:
+        x_selected = X_train[y_train==i]
+        num_samples.append(len(x_selected))
+
+    return num_samples
+
+def plot_training_sample_dist(num_classes, num_samples):
+    plt.figure(figsize=(12, 8))
+    plt.bar(range(0, num_classes), num_samples)
+    plt.title("Distribution of the training set")
+    plt.xlabel("Class number")
+    plt.ylabel("Number of images")
+    plt.show()
