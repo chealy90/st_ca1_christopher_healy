@@ -265,11 +265,12 @@ def plot_training_sample_dist(num_classes, num_samples):
     plt.show()
 
 
-def one_hot_encode(num_classes, y_train, y_test):
+def one_hot_encode(num_classes, y_train, y_val, y_test):
     y_train = to_categorical(y_train, num_classes)
+    y_val = to_categorical(y_val, num_classes)
     y_test = to_categorical(y_test, num_classes)
 
-    return y_train, y_test
+    return y_train, y_val, y_test
 
 def create_data_generator():
     datagen = ImageDataGenerator(width_shift_range=0.1,
@@ -279,11 +280,11 @@ def create_data_generator():
                                   rotation_range=1)
     return datagen
 
-def evaluate_model(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test, datagen):
+def evaluate_model(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test, datagen, epochs=10):
     datagen.fit(X_train)
 
     history = model.fit(datagen.flow(X_train, y_train, batch_size=50),
-                        epochs=10, validation_data=(X_val, y_val), batch_size=500, verbose=1, shuffle=1)
+                        epochs=epochs, validation_data=(X_val, y_val), batch_size=500, verbose=1, shuffle=1)
 
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
@@ -310,4 +311,4 @@ def create_train_validation_split(X_train, y_train):
         stratify=y_train
     )
 
-    return X_train, X_val, y_train, y_val
+    return X_train, y_train, X_val, y_val

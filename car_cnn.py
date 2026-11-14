@@ -18,25 +18,72 @@ from PIL import Image
 import cv2
 import random
 
+#import utils and models
+from util_funcs import *
+from models import *
+
 np.random.seed(0)
 
-#import utils
-from util_funcs import *
-#X_train, y_train, X_test, y_test = None, None, None, None
+cifar10_class_names = ["automobile", "bird", "cat", "deer", "dog", "horse","truck"]
+cifar100_class_names_fine = ["cattle", "fox", "baby", "boy",
+        "girl", "man", "woman", "rabbit", "squirrel", "bicycle", "bus", "motorcycle", "pickup_truck", "train", "lawn_mower", "tractor"]
+cifar100_class_names_coarse = ["trees"]
+
+class_names = cifar10_class_names + cifar100_class_names_fine + cifar100_class_names_coarse
+
+
 
 
 
 def main():
-    #data loading and preprocessing
+    #stage 1 - data preprocessing
     X_train, y_train, X_test, y_test = load_data()
 
-
-
-
-    #data exploration
+    #stage 2 - data exploration
     explore_data(X_train, y_train, X_test, y_test)
 
-#stage 1 - data preprocessing
+    #separate out validation data set
+    X_train, y_train, X_val, y_val = create_train_validation_split(X_train, y_train)
+
+    #prepare labels for one hot encoding
+    class_to_index = {name: index for index, name in enumerate(class_names)}
+
+    #print(y_train.shape)
+    #print(y_train[:5])
+    #print(type(y_train[0]))
+
+    y_train = np.array([class_to_index[label] for label in y_train])
+    y_val = np.array([class_to_index[label] for label in y_val])
+    y_test = np.array([class_to_index[label] for label in y_test])
+    y_train, y_val, y_test = one_hot_encode(24, y_train, y_val, y_test)
+
+    #reshape for datagen
+    X_train = X_train.reshape(-1, 32, 32, 1)
+    X_val = X_val.reshape(-1, 32, 32, 1)
+    X_test = X_test.reshape(-1, 32, 32, 1)
+
+    #
+
+
+    #stage 3 - build models
+    #create models
+    num_classes = 24
+    basic_cnn = create_basic_cnn(num_classes)
+    leNet_model = create_leNet_model(num_classes)
+    modified_letNet_model = create_modifed_letNet(num_classes)
+    final_model = create_final_model(num_classes)
+
+    #stage 4 - test models
+    #evaluate performance
+    datagen = create_data_generator()
+
+    #evaluate_model(basic_cnn, "Basic CNN", X_train, y_train, X_val, y_val, X_test, y_test, datagen)
+    #evaluate_model(leNet_model, "leNet Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen)
+    #evaluate_model(modified_letNet_model, "Modified LeNet Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen)
+    evaluate_model(final_model, "Final Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen, 30)
+
+
+
 def load_data():
     train_data, test_data = unpickle()
 

@@ -7,7 +7,7 @@ from tensorflow.keras.layers import Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 #1: basic model - 1 conv, 1 pool, 1 dense, 1 output
-def basic_cnn(num_classes):
+def create_basic_cnn(num_classes):
     model = Sequential()
     model.add(Input(shape=(32, 32, 1)))
 
@@ -16,12 +16,13 @@ def basic_cnn(num_classes):
     model.add(MaxPooling2D(pool_size=(2,2)))
 
     #1 dense, 1 output
-    model.add(Dense(500, activation='relu'))
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='relu'))
     model.compile(Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
 #2 leNet model - 2 conv, 2 pooling, flatten, dense, dropout, output
-def leNet_model(num_classes):
+def create_leNet_model(num_classes):
     model = Sequential()
     model.add(Input(shape=(32, 32, 1)))
     model.add(Conv2D(60, (5, 5), activation='relu'))
@@ -36,7 +37,7 @@ def leNet_model(num_classes):
     return model
 
 #3: modified leNet - extra convolution and dropout layers
-def modifed_letNet(num_classes):
+def create_modifed_letNet(num_classes):
     model = Sequential()
     model.add(Input(shape=(32, 32, 1)))
     model.add(Conv2D(60, (5, 5), activation='relu'))
@@ -48,8 +49,42 @@ def modifed_letNet(num_classes):
     model.add(Conv2D(30, (3,3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2,2)))
     
+    
     model.add(Flatten())
     model.add(Dense(500, activation='relu'))
+    model.add(Dropout(0.5))
+
+    model.add(Dense(num_classes, activation='softmax'))
+    model.compile(Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+
+#4: final model
+def create_final_model(num_classes):
+    model = Sequential()
+    model.add(Input(shape=(32, 32, 1)))
+    model.add(Conv2D(60, (5, 5), activation='relu'))
+    model.add(Conv2D(60, (5, 5), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Dense(50, activation='relu'))
+    model.add(Dropout(0.5))
+
+
+    model.add(Conv2D(30, (3,3), activation='relu'))
+    model.add(Conv2D(30, (3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Dense(50, activation='relu'))
+    model.add(Dropout(0.5))
+
+    model.add(Conv2D(15, (3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Dense(50, activation='relu'))
+    model.add(Dropout(0.5))
+
+    
+    
+    model.add(Flatten())
+    model.add(Dense(100, activation='relu'))
     model.add(Dropout(0.5))
 
     model.add(Dense(num_classes, activation='softmax'))
