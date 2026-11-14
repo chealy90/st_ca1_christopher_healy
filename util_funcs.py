@@ -229,6 +229,8 @@ def preprocess_image(img):
     img = equalize(img)
     img = img/255
 
+    #bug fix line - issue with image shape, resolved by GenAI
+    img = np.expand_dims(img, axis=-1)
     return img
     
 
@@ -312,3 +314,10 @@ def create_train_validation_split(X_train, y_train):
     )
 
     return X_train, y_train, X_val, y_val
+
+def test_model_with_image(model, img, label, mapping):
+    img = np.expand_dims(img, axis=0)
+    predicted_class = np.argmax(model.predict(img), axis=1)[0]
+    print("Predicted class: ", mapping[predicted_class])
+    print("Actual class: ", mapping[np.argmax(label)])
+    print("")

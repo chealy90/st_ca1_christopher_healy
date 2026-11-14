@@ -47,6 +47,7 @@ def main():
 
     #prepare labels for one hot encoding
     class_to_index = {name: index for index, name in enumerate(class_names)}
+    index_to_class = {index: name for name, index in class_to_index.items()}
 
     #print(y_train.shape)
     #print(y_train[:5])
@@ -58,11 +59,18 @@ def main():
     y_train, y_val, y_test = one_hot_encode(24, y_train, y_val, y_test)
 
     #reshape for datagen
-    X_train = X_train.reshape(-1, 32, 32, 1)
-    X_val = X_val.reshape(-1, 32, 32, 1)
-    X_test = X_test.reshape(-1, 32, 32, 1)
+    #X_train = X_train.reshape(-1, 32, 32, 1)
+    #X_val = X_val.reshape(-1, 32, 32, 1)
+    #X_test = X_test.reshape(-1, 32, 32, 1)
 
-    #
+    #samples for final test:
+    test_images = []
+    test_labels = []
+    for i in range(10):
+        index = np.random.randint(0, len(X_test)-1)
+        test_images.append(X_test[index])
+        test_labels.append(y_test[index])
+
 
 
     #stage 3 - build models
@@ -80,7 +88,15 @@ def main():
     #evaluate_model(basic_cnn, "Basic CNN", X_train, y_train, X_val, y_val, X_test, y_test, datagen)
     #evaluate_model(leNet_model, "leNet Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen)
     #evaluate_model(modified_letNet_model, "Modified LeNet Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen)
-    evaluate_model(final_model, "Final Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen, 30)
+    #evaluate_model(final_model, "Final Model", X_train, y_train, X_val, y_val, X_test, y_test, datagen, 30)
+    
+
+    #Test with a sample of images
+    for i in range(len(test_images)):
+        img = X_test[i]
+        label = y_test[i]
+        test_model_with_image(leNet_model, img, label, index_to_class)
+
 
 
 
@@ -89,6 +105,8 @@ def load_data():
 
     X_train, y_train = train_data["data"], train_data["labels"]
     X_test, y_test = test_data["data"], test_data["labels"]
+
+    
 
     #reshape to 32x32x3
     #the transpose line fixes I had with images not being rendered properly (ChatGPT)
