@@ -3,6 +3,10 @@ import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.model_selection import train_test_split
+
 
 
 '''
@@ -259,3 +263,52 @@ def plot_training_sample_dist(num_classes, num_samples):
     plt.xlabel("Class number")
     plt.ylabel("Number of images")
     plt.show()
+
+
+def one_hot_encode(num_classes, y_train, y_val, y_test):
+    y_train = to_categorical(y_train, num_classes)
+    y_val = to_categorical(y_val, num_classes)
+    y_test = to_categorical(y_test, num_classes)
+
+    return y_train, y_val, y_test
+
+def create_data_generator():
+    datagen = ImageDataGenerator(width_shift_range=0.1,
+                                  height_shift_range=0.1,
+                                  zoom_range=0.2,
+                                  shear_range=0.1,
+                                  rotation_range=1)
+    return datagen
+
+def evaluate_model(model, model_name, X_train, y_train, X_val, y_val, X_test, y_test, datagen, epochs=10):
+    datagen.fit(X_train)
+
+    history = model.fit(datagen.flow(X_train, y_train, batch_size=50),
+                        epochs=epochs, validation_data=(X_val, y_val), batch_size=500, verbose=1, shuffle=1)
+
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.legend(['training', 'validation'])
+    plt.title(model_name + ": Accuracy")
+    plt.xlabel("Epoch")
+    plt.show()
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.legend(['training', 'validation'])
+    plt.title(model_name + ": Loss")
+    plt.xlabel("Epoch")
+    plt.show()
+    score = model.evaluate(X_test, y_test, verbose=1)
+    print(model_name + " test score: ", score[0])
+    print(model_name + " test accuracy: ", score[1])
+
+
+def create_train_validation_split(X_train, y_train):
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_train, y_train,
+        test_size=0.2,
+        random_state=42,
+        stratify=y_train
+    )
+
+    return X_train, y_train, X_val, y_val
